@@ -1,0 +1,30 @@
+type OfertaTrabajo {
+    id: ID!
+    titulo: String!
+    descripcion: String
+    salario: Float
+    ubicacion: String
+    requisitos: String
+    fechaPublicacion: String
+    empresa: Empresa
+    postulaciones: [Postulacion]
+    visualizaciones: [VisualizacionOferta]
+}
+
+extend type Query {
+    obtenerOfertasTrabajo: [OfertaTrabajo]
+    obtenerOfertaTrabajoPorId(id: ID!): OfertaTrabajo
+}
+
+extend type Mutation {
+    crearOfertaTrabajo(
+        titulo: String!,
+        descripcion: String,
+        salario: Float,
+        ubicacion: String,
+        requisitos: String,
+        fechaPublicacion: String,
+        empresaId: ID!
+    ): OfertaTrabajo
+    eliminarOfertaTrabajo(id: ID!): String
+}
