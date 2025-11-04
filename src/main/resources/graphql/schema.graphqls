@@ -1,129 +1,121 @@
-scalar UUID
-scalar DateTime
-scalar Json
-
-type Query {
-    obtenerEmpresas: [Empresa]
-    obtenerEmpresaPorId(id: UUID): Empresa
-
-    obtenerOfertasTrabajo: [OfertaTrabajo]
-    obtenerOfertaTrabajoPorId(id: UUID): OfertaTrabajo
-
-    obtenerEntrevistas: [Entrevista]
-    obtenerEntrevistaPorId(id: UUID): Entrevista
-    
-    obtenerEvaluaciones: [Evaluacion]
-    obtenerEvaluacionPorId(id: UUID): Evaluacion
-    
-    obtenerPostulaciones: [Postulacion]
-    obtenerPostulacionPorId(id: UUID): Postulacion
-    
-    obtenerVisualizacionesOferta: [VisualizacionOferta]
-    obtenerVisualizacionOfertaPorId(id: UUID): VisualizacionOferta
+# Tipos para Features
+type PostulanteFeaturesDTO {
+  idPostulante: ID!
+  aniosExperiencia: Int!
+  nivelEducacion: String!
+  habilidades: String!
+  idiomas: String!
+  certificaciones: String!
+  puestoActual: String!
+  idOfertaTrabajo: ID!
 }
 
-type Mutation {
-    crearEmpresa(nombre: String!, correo: String!, rubro: String!): Empresa
-    eliminarEmpresa(id: UUID!): String
-
-    crearOfertaTrabajo(
-        titulo: String!,
-        descripcion: String!,
-        salario: Float,
-        ubicacion: String,
-        requisitos: String,
-        fechaPublicacion: String,
-        empresaId: UUID!
-    ): OfertaTrabajo
-    eliminarOfertaTrabajo(id: UUID!): String
-
-    crearEntrevista(
-        fecha: String!,
-        duracionMin: Int,
-        objetivosTotales: String,
-        objetivosCubiertos: String,
-        entrevistador: String,
-        postulacionId: UUID!
-    ): Entrevista
-    eliminarEntrevista(id: UUID!): String
-
-    crearEvaluacion(
-        calificacionTecnica: Float,
-        calificacionActitud: Float,
-        calificacionGeneral: Float,
-        comentarios: String,
-        entrevistaId: UUID!
-    ): Evaluacion
-    eliminarEvaluacion(id: UUID!): String
-
-    crearPostulacion(
-        nombre: String!,
-        aniosExperiencia: Int!,
-        nivelEducacion: String!,
-        habilidades: String!,
-        idiomas: String!,
-        certificaciones: String!,
-        puestoActual: String!,
-        urlCv: String!,
-        fechaPostulacion: String!,
-        estado: String!,
-        ofertaId: UUID!
-    ): Postulacion
-    eliminarPostulacion(id: UUID!): String
-
-    crearVisualizacionOferta(
-        fechaVisualizacion: String!,
-        origen: String!,
-        ofertaId: UUID!
-    ): VisualizacionOferta
-    eliminarVisualizacionOferta(id: UUID!): String
+type OfertaFeaturesDTO {
+  idOferta: ID!
+  titulo: String!
+  salario: Float
+  ubicacion: String!
+  requisitos: String!
+  idEmpresa: ID!
 }
 
+type EmpresaFeaturesDTO {
+  idEmpresa: ID!
+  rubro: String!
+}
+
+# Tipos existentes
 type Empresa {
-    id: UUID
-    nombre: String
-    correo: String
-    rubro: String
+  id: ID!
+  nombre: String!
+  correo: String!
+  rubro: String!
+  ofertas: [OfertaTrabajo!]!
 }
 
 type OfertaTrabajo {
-    id: UUID
-    titulo: String
-    descripcion: String
-    salario: Float
-    ubicacion: String
-    requisitos: String
-    fechaPublicacion: String
-    empresa: Empresa
+  id: ID!
+  titulo: String!
+  descripcion: String
+  salario: Float
+  ubicacion: String!
+  requisitos: String
+  fechaPublicacion: String!
+  empresa: Empresa!
+  postulaciones: [Postulacion!]!
+  visualizaciones: [VisualizacionOferta!]!
 }
 
 type Postulacion {
-    id: UUID
-    nombre: String
-    puestoActual: String
-    oferta: OfertaTrabajo
+  id: ID!
+  nombre: String!
+  aniosExperiencia: Int!
+  nivelEducacion: String!
+  habilidades: String!
+  idiomas: String!
+  certificaciones: String!
+  puestoActual: String!
+  urlCv: String!
+  fechaPostulacion: String!
+  estado: String!
+  oferta: OfertaTrabajo!
+  entrevistas: [Entrevista!]!
 }
 
 type Entrevista {
-    id: UUID
-    fecha: String
-    duracionMin: Int
-    entrevistador: String
-    postulacion: Postulacion
+  id: ID!
+  fecha: String!
+  duracionMin: Int
+  objetivosTotales: String
+  objetivosCubiertos: String
+  entrevistador: String
+  postulacion: Postulacion!
+  evaluaciones: [Evaluacion!]!
 }
 
 type Evaluacion {
-    id: UUID
-    calificacionTecnica: Float
-    calificacionActitud: Float
-    calificacionGeneral: Float
-    comentarios: String
-    entrevista: Entrevista
+  id: ID!
+  calificacionTecnica: Float
+  calificacionActitud: Float
+  calificacionGeneral: Float
+  comentarios: String
+  entrevista: Entrevista!
 }
 
 type VisualizacionOferta {
-    id: UUID
-    fechaVisualizacion: String
-    origen: String
-    oferta: OfertaTrabajo
+  id: ID!
+  fechaVisualizacion: String!
+  origen: String!
+  oferta: OfertaTrabajo!
+}
+
+# Queries
+type Query {
+  # Queries existentes
+  obtenerPostulaciones: [Postulacion!]!
+  obtenerPostulacionPorId(id: ID!): Postulacion
+
+  # Nuevas queries para features
+  obtenerFeaturesPostulantes: [PostulanteFeaturesDTO!]!
+  obtenerFeaturesOfertas: [OfertaFeaturesDTO!]!
+  obtenerFeaturesEmpresas: [EmpresaFeaturesDTO!]!
+}
+
+# Mutations
+type Mutation {
+  crearPostulacion(
+    nombre: String!
+    aniosExperiencia: Int!
+    nivelEducacion: String!
+    habilidades: String!
+    idiomas: String!
+    certificaciones: String!
+    puestoActual: String!
+    urlCv: String!
+    fechaPostulacion: String!
+    estado: String!
+    ofertaId: ID!
+  ): Postulacion!
+
+  eliminarPostulacion(id: ID!): String!
 }

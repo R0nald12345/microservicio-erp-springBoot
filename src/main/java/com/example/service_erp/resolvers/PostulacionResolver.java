@@ -1,5 +1,8 @@
 package com.example.service_erp.resolvers;
 
+import com.example.service_erp.dto.EmpresaFeaturesDTO;
+import com.example.service_erp.dto.OfertaFeaturesDTO;
+import com.example.service_erp.dto.PostulanteFeaturesDTO;
 import com.example.service_erp.entities.Postulacion;
 import com.example.service_erp.services.PostulacionService;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -51,5 +54,21 @@ public class PostulacionResolver {
     public String eliminarPostulacion(@Argument UUID id) {
         service.eliminar(id);
         return "Postulación eliminada correctamente";
+    }
+
+    // QUERIES PARA OBTENER FEATURES SEPARADOS
+    @QueryMapping
+    public List<PostulanteFeaturesDTO> obtenerFeaturesPostulantes() {
+        return service.obtenerFeaturesPostulantes();
+    }
+
+    @QueryMapping
+    public List<OfertaFeaturesDTO> obtenerFeaturesOfertas() {
+        return service.obtenerFeaturesOfertas();
+    }
+
+    @QueryMapping
+    public List<EmpresaFeaturesDTO> obtenerFeaturesEmpresas() {
+        return service.obtenerFeaturesEmpresas();
     }
 }
