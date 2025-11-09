@@ -1,5 +1,6 @@
 package com.example.service_erp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
@@ -30,9 +31,10 @@ public class Entrevista {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postulacion_id", nullable = false)
     @ToString.Exclude
-    private Postulacion postulacion;
+    public Postulacion postulacion; // Público para acceso desde resolvers (Lombok genera getter pero IDE no lo reconoce)
 
     @OneToMany(mappedBy = "entrevista", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
+    @JsonIgnore
     private List<Evaluacion> evaluaciones;
 }

@@ -75,12 +75,19 @@ service_erp/
    ```bash
    mvn clean compile
    ```
+    
+   ```bash
+   .\mvnw.cmd clean compile
+   ``` 
 
 3. **Ejecutar el servidor:**
 
    ```bash
    mvn spring-boot:run
    ```
+   ```bash
+   .\mvnw.cmd spring-boot:run
+   ``` 
 
 4. **Acceder a los endpoints:**
    - **GraphiQL (Interfaz Visual):** http://localhost:8080/api/graphiql
@@ -100,7 +107,7 @@ service_erp/
 
 ### 3. Postulacion
 - Postulaciones de candidatos a ofertas de trabajo
-- Campos: id (UUID), nombre, aniosExperiencia, nivelEducacion, habilidades, idiomas, certificaciones, puestoActual, urlCv, fechaPostulacion, estado
+- Campos: id (UUID), nombre, aniosExperiencia, nivelEducacion, habilidades, idiomas, certificaciones, puestoActual, urlCv, fechaPostulacion, estado, telefono, email
 - Relación: Pertenece a una OfertaTrabajo
 
 ### 4. Entrevista
@@ -385,11 +392,15 @@ mutation {
     urlCv: "https://example.com/cv/maria-garcia.pdf"
     fechaPostulacion: "2025-11-01"
     estado: "Pendiente"
+    telefono: "+591 70012345"
+    email: "maria.garcia@example.com"
     ofertaId: "uuid-oferta"
   ) {
     id
     nombre
     puestoActual
+    telefono
+    email
     oferta {
       titulo
     }

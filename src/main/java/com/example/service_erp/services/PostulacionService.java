@@ -31,7 +31,7 @@ public class PostulacionService {
     public Postulacion crear(String nombre, int aniosExperiencia, String nivelEducacion,
                              String habilidades, String idiomas, String certificaciones,
                              String puestoActual, String urlCv, String fechaPostulacion,
-                             String estado, UUID ofertaId) {
+                             String estado, String telefono, String email, UUID ofertaId) {
 
         OfertaTrabajo oferta = ofertaRepository.findById(ofertaId)
                 .orElseThrow(() -> new RuntimeException("Oferta no encontrada"));
@@ -47,6 +47,8 @@ public class PostulacionService {
                 .urlCv(urlCv)
                 .fechaPostulacion(fechaPostulacion)
                 .estado(estado)
+                .telefono(telefono)
+                .email(email)
                 .oferta(oferta)
                 .build();
 

@@ -28,5 +28,5 @@ public class Evaluacion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "entrevista_id", nullable = false)
     @ToString.Exclude
-    private Entrevista entrevista;
+    public Entrevista entrevista; // Público para acceso desde resolvers (Lombok genera getter pero IDE no lo reconoce)
 }

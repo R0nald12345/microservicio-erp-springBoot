@@ -1,11 +1,14 @@
 package com.example.service_erp.resolvers;
 
+import com.example.service_erp.entities.Entrevista;
 import com.example.service_erp.entities.Evaluacion;
 import com.example.service_erp.services.EvaluacionService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +20,13 @@ public class EvaluacionResolver {
 
     public EvaluacionResolver(EvaluacionService service) {
         this.service = service;
+    }
+
+    @SchemaMapping(typeName = "Evaluacion", field = "entrevista")
+    @Transactional(readOnly = true)
+    public Entrevista entrevista(Evaluacion evaluacion) {
+        // Acceso directo al campo para evitar problemas con Lombok en el IDE
+        return evaluacion.entrevista;
     }
 
     @QueryMapping

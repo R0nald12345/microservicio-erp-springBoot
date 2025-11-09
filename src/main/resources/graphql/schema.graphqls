@@ -67,6 +67,8 @@ type Mutation {
         urlCv: String!,
         fechaPostulacion: String!,
         estado: String!,
+        telefono: String!,
+        email: String!,
         ofertaId: UUID!
     ): Postulacion
     eliminarPostulacion(id: UUID!): String
@@ -101,6 +103,8 @@ type Postulacion {
     id: UUID
     nombre: String
     puestoActual: String
+    telefono: String
+    email: String
     oferta: OfertaTrabajo
 }
 

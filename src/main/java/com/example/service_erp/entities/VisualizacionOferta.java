@@ -23,5 +23,5 @@ public class VisualizacionOferta {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "oferta_id", nullable = false)
     @ToString.Exclude
-    private OfertaTrabajo oferta;
+    public OfertaTrabajo oferta; // Público para acceso desde resolvers (Lombok genera getter pero IDE no lo reconoce)
 }
