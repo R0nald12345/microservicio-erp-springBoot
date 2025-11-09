@@ -15,8 +15,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Evaluacion {
 
+public class Evaluacion {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
