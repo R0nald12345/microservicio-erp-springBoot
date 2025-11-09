@@ -1,11 +1,14 @@
 package com.example.service_erp.resolvers;
 
 import com.example.service_erp.entities.Empresa;
+import com.example.service_erp.entities.OfertaTrabajo;
 import com.example.service_erp.services.EmpresaService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +20,13 @@ public class EmpresaResolver {
 
     public EmpresaResolver(EmpresaService service) {
         this.service = service;
+    }
+
+    @SchemaMapping(typeName = "Empresa", field = "ofertas")
+    @Transactional(readOnly = true)
+    public List<OfertaTrabajo> ofertas(Empresa empresa) {
+        // Acceso directo al campo para evitar problemas con Lombok en el IDE
+        return empresa.ofertas;
     }
 
     @QueryMapping

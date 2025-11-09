@@ -2,6 +2,8 @@ package com.example.service_erp.resolvers;
 
 import com.example.service_erp.entities.Empresa;
 import com.example.service_erp.entities.OfertaTrabajo;
+import com.example.service_erp.entities.Postulacion;
+import com.example.service_erp.entities.VisualizacionOferta;
 import com.example.service_erp.services.OfertaTrabajoService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -27,6 +29,20 @@ public class OfertaTrabajoResolver {
     public Empresa empresa(OfertaTrabajo oferta) {
         // Acceso directo al campo para evitar problemas con Lombok en el IDE
         return oferta.empresa;
+    }
+
+    @SchemaMapping(typeName = "OfertaTrabajo", field = "postulaciones")
+    @Transactional(readOnly = true)
+    public List<Postulacion> postulaciones(OfertaTrabajo oferta) {
+        // Acceso directo al campo para evitar problemas con Lombok en el IDE
+        return oferta.postulaciones;
+    }
+
+    @SchemaMapping(typeName = "OfertaTrabajo", field = "visualizaciones")
+    @Transactional(readOnly = true)
+    public List<VisualizacionOferta> visualizaciones(OfertaTrabajo oferta) {
+        // Acceso directo al campo para evitar problemas con Lombok en el IDE
+        return oferta.visualizaciones;
     }
 
     @QueryMapping

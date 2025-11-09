@@ -86,6 +86,9 @@ type Empresa {
     nombre: String
     correo: String
     rubro: String
+    createdAt: DateTime
+    updatedAt: DateTime
+    ofertas: [OfertaTrabajo]
 }
 
 type OfertaTrabajo {
@@ -97,23 +100,43 @@ type OfertaTrabajo {
     requisitos: String
     fechaPublicacion: String
     empresa: Empresa
+    createdAt: DateTime
+    updatedAt: DateTime
+    postulaciones: [Postulacion]
+    visualizaciones: [VisualizacionOferta]
 }
 
 type Postulacion {
     id: UUID
     nombre: String
+    aniosExperiencia: Int
+    nivelEducacion: String
+    habilidades: String
+    idiomas: String
+    certificaciones: String
     puestoActual: String
+    urlCv: String
+    fechaPostulacion: String
+    estado: String
     telefono: String
     email: String
     oferta: OfertaTrabajo
+    createdAt: DateTime
+    updatedAt: DateTime
+    entrevistas: [Entrevista]
 }
 
 type Entrevista {
     id: UUID
     fecha: String
     duracionMin: Int
+    objetivosTotales: String
+    objetivosCubiertos: String
     entrevistador: String
     postulacion: Postulacion
+    createdAt: DateTime
+    updatedAt: DateTime
+    evaluaciones: [Evaluacion]
 }
 
 type Evaluacion {
@@ -123,6 +146,8 @@ type Evaluacion {
     calificacionGeneral: Float
     comentarios: String
     entrevista: Entrevista
+    createdAt: DateTime
+    updatedAt: DateTime
 }
 
 type VisualizacionOferta {
@@ -130,4 +155,6 @@ type VisualizacionOferta {
     fechaVisualizacion: String
     origen: String
     oferta: OfertaTrabajo
+    createdAt: DateTime
+    updatedAt: DateTime
 }

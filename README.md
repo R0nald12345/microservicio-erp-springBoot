@@ -98,32 +98,40 @@ service_erp/
 
 ### 1. Empresa
 - Gestión de empresas que publican ofertas de trabajo
-- Campos: id (UUID), nombre, correo, rubro
+- Campos: id (UUID), nombre, correo, rubro, created_at, updated_at
+- Relación: Una empresa tiene muchas ofertas de trabajo (OneToMany)
 
 ### 2. OfertaTrabajo
 - Ofertas de trabajo publicadas por empresas
-- Campos: id (UUID), titulo, descripcion, salario, ubicacion, requisitos, fechaPublicacion
-- Relación: Pertenece a una Empresa
+- Campos: id (UUID), titulo, descripcion, salario, ubicacion, requisitos, fecha_publicacion, empresa_id, created_at, updated_at
+- Relaciones: 
+  - Pertenece a una Empresa (ManyToOne)
+  - Tiene muchas Postulaciones (OneToMany)
+  - Tiene muchas VisualizacionesOferta (OneToMany)
 
 ### 3. Postulacion
 - Postulaciones de candidatos a ofertas de trabajo
-- Campos: id (UUID), nombre, aniosExperiencia, nivelEducacion, habilidades, idiomas, certificaciones, puestoActual, urlCv, fechaPostulacion, estado, telefono, email
-- Relación: Pertenece a una OfertaTrabajo
+- Campos: id (UUID), nombre, anios_experiencia, nivel_educacion, habilidades, idiomas, certificaciones, puesto_actual, url_cv, fecha_postulacion, estado, telefono, email, oferta_id, created_at, updated_at
+- Relaciones:
+  - Pertenece a una OfertaTrabajo (ManyToOne)
+  - Tiene muchas Entrevistas (OneToMany)
 
 ### 4. Entrevista
 - Entrevistas realizadas a postulantes
-- Campos: id (UUID), fecha, duracionMin, objetivosTotales, objetivosCubiertos, entrevistador
-- Relación: Pertenece a una Postulacion
+- Campos: id (UUID), fecha, duracion_min, objetivos_totales, objetivos_cubiertos, entrevistador, postulacion_id, created_at, updated_at
+- Relaciones:
+  - Pertenece a una Postulacion (ManyToOne)
+  - Tiene muchas Evaluaciones (OneToMany)
 
 ### 5. Evaluacion
 - Evaluaciones de las entrevistas realizadas
-- Campos: id (UUID), calificacionTecnica, calificacionActitud, calificacionGeneral, comentarios
-- Relación: Pertenece a una Entrevista
+- Campos: id (UUID), calificacion_tecnica, calificacion_actitud, calificacion_general, comentarios, entrevista_id, created_at, updated_at
+- Relación: Pertenece a una Entrevista (ManyToOne)
 
 ### 6. VisualizacionOferta
 - Registro de visualizaciones de ofertas de trabajo
-- Campos: id (UUID), fechaVisualizacion, origen
-- Relación: Pertenece a una OfertaTrabajo
+- Campos: id (UUID), fecha_visualizacion, origen, oferta_id, created_at, updated_at
+- Relación: Pertenece a una OfertaTrabajo (ManyToOne)
 
 ## 📊 API GraphQL
 
@@ -139,6 +147,12 @@ query {
     nombre
     correo
     rubro
+    createdAt
+    updatedAt
+    ofertas {
+      id
+      titulo
+    }
   }
 }
 ```
@@ -151,6 +165,13 @@ query {
     nombre
     correo
     rubro
+    createdAt
+    updatedAt
+    ofertas {
+      id
+      titulo
+      descripcion
+    }
   }
 }
 ```
@@ -168,10 +189,23 @@ query {
     ubicacion
     requisitos
     fechaPublicacion
+    createdAt
+    updatedAt
     empresa {
       id
       nombre
       correo
+      rubro
+    }
+    postulaciones {
+      id
+      nombre
+      estado
+    }
+    visualizaciones {
+      id
+      fechaVisualizacion
+      origen
     }
   }
 }
@@ -185,8 +219,26 @@ query {
     titulo
     descripcion
     salario
+    ubicacion
+    requisitos
+    fechaPublicacion
+    createdAt
+    updatedAt
     empresa {
+      id
       nombre
+      correo
+      rubro
+    }
+    postulaciones {
+      id
+      nombre
+      estado
+    }
+    visualizaciones {
+      id
+      fechaVisualizacion
+      origen
     }
   }
 }
@@ -200,12 +252,32 @@ query {
   obtenerPostulaciones {
     id
     nombre
+    aniosExperiencia
+    nivelEducacion
+    habilidades
+    idiomas
+    certificaciones
     puestoActual
+    urlCv
+    fechaPostulacion
+    estado
+    telefono
+    email
+    createdAt
+    updatedAt
     oferta {
+      id
       titulo
       empresa {
+        id
         nombre
+        correo
       }
+    }
+    entrevistas {
+      id
+      fecha
+      entrevistador
     }
   }
 }
@@ -217,9 +289,33 @@ query {
   obtenerPostulacionPorId(id: "uuid-aqui") {
     id
     nombre
+    aniosExperiencia
+    nivelEducacion
+    habilidades
+    idiomas
+    certificaciones
     puestoActual
+    urlCv
+    fechaPostulacion
+    estado
+    telefono
+    email
+    createdAt
+    updatedAt
     oferta {
+      id
       titulo
+      descripcion
+      empresa {
+        nombre
+        correo
+      }
+    }
+    entrevistas {
+      id
+      fecha
+      duracionMin
+      entrevistador
     }
   }
 }
@@ -234,12 +330,28 @@ query {
     id
     fecha
     duracionMin
+    objetivosTotales
+    objetivosCubiertos
     entrevistador
+    createdAt
+    updatedAt
     postulacion {
+      id
       nombre
+      puestoActual
       oferta {
+        id
         titulo
+        empresa {
+          nombre
+        }
       }
+    }
+    evaluaciones {
+      id
+      calificacionTecnica
+      calificacionActitud
+      calificacionGeneral
     }
   }
 }
@@ -252,7 +364,26 @@ query {
     id
     fecha
     duracionMin
+    objetivosTotales
+    objetivosCubiertos
     entrevistador
+    createdAt
+    updatedAt
+    postulacion {
+      id
+      nombre
+      puestoActual
+      oferta {
+        titulo
+      }
+    }
+    evaluaciones {
+      id
+      calificacionTecnica
+      calificacionActitud
+      calificacionGeneral
+      comentarios
+    }
   }
 }
 ```
@@ -268,9 +399,17 @@ query {
     calificacionActitud
     calificacionGeneral
     comentarios
+    createdAt
+    updatedAt
     entrevista {
+      id
       fecha
+      duracionMin
       entrevistador
+      postulacion {
+        nombre
+        puestoActual
+      }
     }
   }
 }
@@ -282,8 +421,23 @@ query {
   obtenerEvaluacionPorId(id: "uuid-aqui") {
     id
     calificacionTecnica
+    calificacionActitud
     calificacionGeneral
     comentarios
+    createdAt
+    updatedAt
+    entrevista {
+      id
+      fecha
+      duracionMin
+      entrevistador
+      postulacion {
+        nombre
+        oferta {
+          titulo
+        }
+      }
+    }
   }
 }
 ```
@@ -297,10 +451,17 @@ query {
     id
     fechaVisualizacion
     origen
+    createdAt
+    updatedAt
     oferta {
+      id
       titulo
+      descripcion
       empresa {
+        id
         nombre
+        correo
+        rubro
       }
     }
   }
@@ -314,6 +475,17 @@ query {
     id
     fechaVisualizacion
     origen
+    createdAt
+    updatedAt
+    oferta {
+      id
+      titulo
+      descripcion
+      empresa {
+        nombre
+        correo
+      }
+    }
   }
 }
 ```
@@ -583,17 +755,49 @@ El servicio incluye logging detallado:
 ## 🏷️ Modelo de Datos
 
 ```
-Empresa
-  └── OfertaTrabajo
-        ├── Postulacion
-        │     └── Entrevista
-        │           └── Evaluacion
-        └── VisualizacionOferta
+Empresa (1) ──< (N) OfertaTrabajo
+                      ├── (1) ──< (N) Postulacion
+                      │              └── (1) ──< (N) Entrevista
+                      │                            └── (1) ──< (N) Evaluacion
+                      └── (1) ──< (N) VisualizacionOferta
 ```
+
+**Multiplicidad:**
+- **Empresa** → **OfertaTrabajo**: Una empresa tiene muchas ofertas (1:N)
+- **OfertaTrabajo** → **Empresa**: Una oferta pertenece a una empresa (N:1)
+- **OfertaTrabajo** → **Postulacion**: Una oferta tiene muchas postulaciones (1:N)
+- **Postulacion** → **OfertaTrabajo**: Una postulación pertenece a una oferta (N:1)
+- **Postulacion** → **Entrevista**: Una postulación tiene muchas entrevistas (1:N)
+- **Entrevista** → **Postulacion**: Una entrevista pertenece a una postulación (N:1)
+- **Entrevista** → **Evaluacion**: Una entrevista tiene muchas evaluaciones (1:N)
+- **Evaluacion** → **Entrevista**: Una evaluación pertenece a una entrevista (N:1)
+- **OfertaTrabajo** → **VisualizacionOferta**: Una oferta tiene muchas visualizaciones (1:N)
+- **VisualizacionOferta** → **OfertaTrabajo**: Una visualización pertenece a una oferta (N:1)
 
 ## 📝 Notas
 
 - Todos los IDs son de tipo **UUID**
 - Las fechas se manejan como **String** (formato: "YYYY-MM-DD")
+- Los campos `created_at` y `updated_at` se generan automáticamente y son de tipo **DateTime**
+- Los nombres de columnas en PostgreSQL están en **snake_case** (ej: `fecha_publicacion`, `anios_experiencia`)
+- Los nombres de campos en las entidades Java están en **camelCase** (ej: `fechaPublicacion`, `aniosExperiencia`)
 - Los campos marcados con `!` en el schema son **obligatorios**
 - El endpoint GraphQL solo acepta peticiones **POST**
+- Las relaciones están correctamente mapeadas según la estructura de PostgreSQL
+
+
+# Construir y levantar los servicios
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f service_erp
+
+# Detener los servicios
+docker-compose down
+
+# Detener y eliminar volúmenes (¡cuidado, elimina datos!)
+docker-compose down -v
+
+# Reconstruir solo la aplicación
+docker-compose build service_erp
+docker-compose up -d service_erp

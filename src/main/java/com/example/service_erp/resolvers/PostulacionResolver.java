@@ -1,5 +1,6 @@
 package com.example.service_erp.resolvers;
 
+import com.example.service_erp.entities.Entrevista;
 import com.example.service_erp.entities.OfertaTrabajo;
 import com.example.service_erp.entities.Postulacion;
 import com.example.service_erp.services.PostulacionService;
@@ -27,6 +28,13 @@ public class PostulacionResolver {
     public OfertaTrabajo oferta(Postulacion postulacion) {
         // Acceso directo al campo para evitar problemas con Lombok en el IDE
         return postulacion.oferta;
+    }
+
+    @SchemaMapping(typeName = "Postulacion", field = "entrevistas")
+    @Transactional(readOnly = true)
+    public List<Entrevista> entrevistas(Postulacion postulacion) {
+        // Acceso directo al campo para evitar problemas con Lombok en el IDE
+        return postulacion.entrevistas;
     }
 
     @QueryMapping

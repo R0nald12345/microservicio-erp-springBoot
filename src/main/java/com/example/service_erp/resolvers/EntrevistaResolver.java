@@ -1,6 +1,7 @@
 package com.example.service_erp.resolvers;
 
 import com.example.service_erp.entities.Entrevista;
+import com.example.service_erp.entities.Evaluacion;
 import com.example.service_erp.entities.Postulacion;
 import com.example.service_erp.services.EntrevistaService;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -27,6 +28,13 @@ public class EntrevistaResolver {
     public Postulacion postulacion(Entrevista entrevista) {
         // Acceso directo al campo para evitar problemas con Lombok en el IDE
         return entrevista.postulacion;
+    }
+
+    @SchemaMapping(typeName = "Entrevista", field = "evaluaciones")
+    @Transactional(readOnly = true)
+    public List<Evaluacion> evaluaciones(Entrevista entrevista) {
+        // Acceso directo al campo para evitar problemas con Lombok en el IDE
+        return entrevista.evaluaciones;
     }
 
     @QueryMapping
