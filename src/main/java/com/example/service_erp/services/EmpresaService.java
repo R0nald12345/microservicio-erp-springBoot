@@ -1,13 +1,15 @@
 package com.example.service_erp.services;
 
-import com.example.service_erp.entities.Empresa;
-import com.example.service_erp.repositories.EmpresaRepository;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.UUID;
+
+import com.example.service_erp.entities.Empresa;
+import com.example.service_erp.repositories.EmpresaRepository;
 
 @Service
 public class EmpresaService {
@@ -40,6 +42,23 @@ public class EmpresaService {
                 .correo(correo)
                 .rubro(rubro)
                 .build();
+        return repository.save(empresa);
+    }
+
+      public Empresa actualizar(UUID id, String nombre, String correo, String rubro) {
+        Empresa empresa = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+
+        if (nombre != null && !nombre.isEmpty()) {
+            empresa.setNombre(nombre);
+        }
+        if (correo != null && !correo.isEmpty()) {
+            empresa.setCorreo(correo);
+        }
+        if (rubro != null && !rubro.isEmpty()) {
+            empresa.setRubro(rubro);
+        }
+
         return repository.save(empresa);
     }
 

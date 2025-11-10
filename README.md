@@ -671,6 +671,203 @@ mutation {
 }
 ```
 
+## 📝 Operaciones de Actualización (UPDATE)
+
+### Mutations para Editar
+
+#### Editar Empresa
+
+```graphql
+mutation {
+  actualizarEmpresa(
+    id: "uuid-aqui"
+    nombre: "Nuevo nombre"
+    correo: "nuevo@correo.com"
+    rubro: "Nuevo rubro"
+  ) {
+    id
+    nombre
+    correo
+    rubro
+    updatedAt
+  }
+}
+```
+
+#### Editar Oferta de Trabajo
+
+```graphql
+mutation {
+  actualizarOfertaTrabajo(
+    id: "uuid-aqui"
+    titulo: "Nuevo título"
+    descripcion: "Nueva descripción"
+    salario: 6000.0
+    ubicacion: "Nuevo lugar"
+    requisitos: "Nuevos requisitos"
+    fechaPublicacion: "2025-11-15"
+  ) {
+    id
+    titulo
+    descripcion
+    salario
+    ubicacion
+    requisitos
+    fechaPublicacion
+    updatedAt
+  }
+}
+```
+
+#### Editar Postulación
+
+```graphql
+mutation {
+  actualizarPostulacion(
+    id: "uuid-aqui"
+    nombre: "Nuevo nombre"
+    aniosExperiencia: 7
+    nivelEducacion: "Posgrado"
+    habilidades: "Java, Kotlin, Spring Boot"
+    idiomas: "Español, Inglés, Portugués"
+    certificaciones: "Nuevas certificaciones"
+    puestoActual: "Senior Developer"
+    urlCv: "https://example.com/cv/nuevo.pdf"
+    fechaPostulacion: "2025-11-10"
+    estado: "En entrevista"
+    telefono: "+591 70012346"
+    email: "nuevo@example.com"
+  ) {
+    id
+    nombre
+    estado
+    telefono
+    email
+    updatedAt
+  }
+}
+```
+
+#### Editar Entrevista
+
+```graphql
+mutation {
+  actualizarEntrevista(
+    id: "uuid-aqui"
+    fecha: "2025-11-20"
+    duracionMin: 90
+    objetivosTotales: "Objetivos actualizados"
+    objetivosCubiertos: "Objetivos cubiertos"
+    entrevistador: "Nuevo entrevistador"
+  ) {
+    id
+    fecha
+    duracionMin
+    entrevistador
+    updatedAt
+  }
+}
+```
+
+#### Editar Evaluación
+
+```graphql
+mutation {
+  actualizarEvaluacion(
+    id: "uuid-aqui"
+    calificacionTecnica: 9.0
+    calificacionActitud: 8.5
+    calificacionGeneral: 8.75
+    comentarios: "Excelente desempeño en la entrevista"
+  ) {
+    id
+    calificacionTecnica
+    calificacionActitud
+    calificacionGeneral
+    comentarios
+    updatedAt
+  }
+}
+```
+
+#### Editar Visualización de Oferta
+
+```graphql
+mutation {
+  actualizarVisualizacionOferta(
+    id: "uuid-aqui"
+    fechaVisualizacion: "2025-11-12"
+    origen: "Twitter"
+  ) {
+    id
+    fechaVisualizacion
+    origen
+    updatedAt
+  }
+}
+```
+
+### Ejemplos de Uso Práctico
+
+#### Actualizar el estado de una postulación
+
+```graphql
+mutation {
+  actualizarPostulacion(
+    id: "550e8400-e29b-41d4-a716-446655440000"
+    estado: "Seleccionado"
+  ) {
+    id
+    nombre
+    estado
+    email
+    updatedAt
+  }
+}
+```
+
+#### Cambiar salario de una oferta
+
+```graphql
+mutation {
+  actualizarOfertaTrabajo(
+    id: "550e8400-e29b-41d4-a716-446655440001"
+    salario: 7500.0
+  ) {
+    id
+    titulo
+    salario
+    updatedAt
+  }
+}
+```
+
+#### Actualizar datos de contacto de empresa
+
+```graphql
+mutation {
+  actualizarEmpresa(
+    id: "550e8400-e29b-41d4-a716-446655440002"
+    correo: "contacto.nuevo@empresa.com"
+  ) {
+    id
+    nombre
+    correo
+    updatedAt
+  }
+}
+```
+
+### Notas sobre Actualizaciones
+
+- ✅ **Campos opcionales:** Puedes actualizar solo los campos que necesites cambiar
+- ✅ **Preservación de datos:** Los campos no especificados mantienen sus valores anteriores
+- ✅ **Timestamp automático:** El campo `updatedAt` se actualiza automáticamente
+- ✅ **Validaciones:** Se aplican las mismas validaciones que en la creación
+- ✅ **Relaciones:** No se pueden cambiar las relaciones (foreign keys) mediante mutations de actualización
+
+
+
 ## 🔧 Configuración
 
 ### Base de Datos PostgreSQL

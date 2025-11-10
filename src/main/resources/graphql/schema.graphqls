@@ -24,6 +24,12 @@ type Query {
 
 type Mutation {
     crearEmpresa(nombre: String!, correo: String!, rubro: String!): Empresa
+    actualizarEmpresa(
+        id: UUID!,
+        nombre: String,
+        correo: String,
+        rubro: String
+    ): Empresa
     eliminarEmpresa(id: UUID!): String
 
     crearOfertaTrabajo(
@@ -35,6 +41,15 @@ type Mutation {
         fechaPublicacion: String,
         empresaId: UUID!
     ): OfertaTrabajo
+    actualizarOfertaTrabajo(
+        id: UUID!,
+        titulo: String,
+        descripcion: String,
+        salario: Float,
+        ubicacion: String,
+        requisitos: String,
+        fechaPublicacion: String
+    ): OfertaTrabajo
     eliminarOfertaTrabajo(id: UUID!): String
 
     crearEntrevista(
@@ -45,6 +60,14 @@ type Mutation {
         entrevistador: String,
         postulacionId: UUID!
     ): Entrevista
+    actualizarEntrevista(
+        id: UUID!,
+        fecha: String,
+        duracionMin: Int,
+        objetivosTotales: String,
+        objetivosCubiertos: String,
+        entrevistador: String
+    ): Entrevista
     eliminarEntrevista(id: UUID!): String
 
     crearEvaluacion(
@@ -53,6 +76,13 @@ type Mutation {
         calificacionGeneral: Float,
         comentarios: String,
         entrevistaId: UUID!
+    ): Evaluacion
+    actualizarEvaluacion(
+        id: UUID!,
+        calificacionTecnica: Float,
+        calificacionActitud: Float,
+        calificacionGeneral: Float,
+        comentarios: String
     ): Evaluacion
     eliminarEvaluacion(id: UUID!): String
 
@@ -71,6 +101,21 @@ type Mutation {
         email: String!,
         ofertaId: UUID!
     ): Postulacion
+    actualizarPostulacion(
+        id: UUID!,
+        nombre: String,
+        aniosExperiencia: Int,
+        nivelEducacion: String,
+        habilidades: String,
+        idiomas: String,
+        certificaciones: String,
+        puestoActual: String,
+        urlCv: String,
+        fechaPostulacion: String,
+        estado: String,
+        telefono: String,
+        email: String
+    ): Postulacion
     eliminarPostulacion(id: UUID!): String
 
     crearVisualizacionOferta(
@@ -78,8 +123,14 @@ type Mutation {
         origen: String!,
         ofertaId: UUID!
     ): VisualizacionOferta
+    actualizarVisualizacionOferta(
+        id: UUID!,
+        fechaVisualizacion: String,
+        origen: String
+    ): VisualizacionOferta
     eliminarVisualizacionOferta(id: UUID!): String
 }
+
 
 type Empresa {
     id: UUID
