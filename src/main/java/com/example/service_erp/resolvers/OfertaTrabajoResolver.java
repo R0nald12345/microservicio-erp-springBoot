@@ -61,6 +61,11 @@ public class OfertaTrabajoResolver {
         return service.obtenerPorId(id);
     }
 
+    @QueryMapping
+    public List<OfertaTrabajo> obtenerOfertasPorEmpresa(@Argument UUID empresaId, @Argument Integer limit) {
+        return service.obtenerPorEmpresaId(empresaId, limit);
+    }
+
     @MutationMapping
     public OfertaTrabajo crearOfertaTrabajo(
             @Argument String titulo,

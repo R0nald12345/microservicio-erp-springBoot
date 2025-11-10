@@ -8,6 +8,7 @@ type Query {
 
     obtenerOfertasTrabajo(limit: Int): [OfertaTrabajo]
     obtenerOfertaTrabajoPorId(id: UUID): OfertaTrabajo
+    obtenerOfertasPorEmpresa(empresaId: UUID!, limit: Int): [OfertaTrabajo]
 
     obtenerEntrevistas(limit: Int): [Entrevista]
     obtenerEntrevistaPorId(id: UUID): Entrevista
