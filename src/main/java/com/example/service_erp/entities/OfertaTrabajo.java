@@ -6,7 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,15 +44,16 @@ public class OfertaTrabajo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "empresa_id", nullable = false)
     @ToString.Exclude
-    public Empresa empresa; // Público para acceso desde resolvers (Lombok genera getter pero IDE no lo reconoce)
+    @JsonIgnore
+    public Empresa empresa; // Público para acceso desde resolvers, @JsonIgnore para evitar bucles infinitos
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     @OneToMany(mappedBy = "oferta", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude

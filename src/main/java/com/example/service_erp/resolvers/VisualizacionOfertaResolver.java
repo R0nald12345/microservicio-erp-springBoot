@@ -30,8 +30,8 @@ public class VisualizacionOfertaResolver {
     }
 
     @QueryMapping
-    public List<VisualizacionOferta> obtenerVisualizacionesOferta() {
-        return service.obtenerTodas();
+    public List<VisualizacionOferta> obtenerVisualizacionesOferta(@Argument Integer limit) {
+        return service.obtenerTodas(limit);
     }
 
     @QueryMapping

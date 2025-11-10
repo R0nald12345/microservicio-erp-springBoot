@@ -4,6 +4,9 @@ import com.example.service_erp.entities.Evaluacion;
 import com.example.service_erp.entities.Entrevista;
 import com.example.service_erp.repositories.EvaluacionRepository;
 import com.example.service_erp.repositories.EntrevistaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +17,7 @@ public class EvaluacionService {
 
     private final EvaluacionRepository repository;
     private final EntrevistaRepository entrevistaRepository;
+    private static final int DEFAULT_LIMIT = 10;
 
     public EvaluacionService(EvaluacionRepository repository, EntrevistaRepository entrevistaRepository) {
         this.repository = repository;
@@ -21,7 +25,21 @@ public class EvaluacionService {
     }
 
     public List<Evaluacion> obtenerTodas() {
-        return repository.findAll();
+        return obtenerTodas(DEFAULT_LIMIT);
+    }
+
+    public List<Evaluacion> obtenerTodas(Integer limit) {
+        int pageSize = (limit != null && limit > 0) ? Math.min(limit, 100) : DEFAULT_LIMIT;
+        Pageable pageable = PageRequest.of(0, pageSize);
+        Page<Evaluacion> page = repository.findAllOrderedByCreatedAtDesc(pageable);
+        return page.getContent();
+    }
+
+    public List<Evaluacion> obtenerPorEntrevistaId(UUID entrevistaId, Integer limit) {
+        int pageSize = (limit != null && limit > 0) ? Math.min(limit, 100) : DEFAULT_LIMIT;
+        Pageable pageable = PageRequest.of(0, pageSize);
+        Page<Evaluacion> page = repository.findByEntrevistaIdOrderedByCreatedAtDesc(entrevistaId, pageable);
+        return page.getContent();
     }
 
     public Evaluacion obtenerPorId(UUID id) {

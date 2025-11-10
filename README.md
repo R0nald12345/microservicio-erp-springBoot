@@ -139,23 +139,25 @@ service_erp/
 
 #### Empresas
 
-**Obtener todas las empresas:**
+**Obtener todas las empresas (con paginación - por defecto 10, ordenadas por fecha DESC):**
 ```graphql
 query {
-  obtenerEmpresas {
+  obtenerEmpresas(limit: 10) {
     id
     nombre
     correo
     rubro
     createdAt
     updatedAt
-    ofertas {
+    ofertas(limit: 10) {
       id
       titulo
     }
   }
 }
 ```
+
+**Nota:** Si no especificas `limit`, por defecto se devuelven los últimos 10 registros (ordenados por `created_at DESC`). El máximo permitido es 100.
 
 **Obtener empresa por ID:**
 ```graphql
@@ -178,10 +180,10 @@ query {
 
 #### Ofertas de Trabajo
 
-**Obtener todas las ofertas:**
+**Obtener todas las ofertas (con paginación - por defecto 10, ordenadas por fecha DESC):**
 ```graphql
 query {
-  obtenerOfertasTrabajo {
+  obtenerOfertasTrabajo(limit: 10) {
     id
     titulo
     descripcion
@@ -197,12 +199,12 @@ query {
       correo
       rubro
     }
-    postulaciones {
+    postulaciones(limit: 10) {
       id
       nombre
       estado
     }
-    visualizaciones {
+    visualizaciones(limit: 10) {
       id
       fechaVisualizacion
       origen
@@ -210,6 +212,8 @@ query {
   }
 }
 ```
+
+**Nota:** Usa `limit` en las relaciones para evitar cargar miles de registros. Por defecto cada relación devuelve 10 registros.
 
 **Obtener oferta por ID:**
 ```graphql
@@ -246,10 +250,10 @@ query {
 
 #### Postulaciones
 
-**Obtener todas las postulaciones:**
+**Obtener todas las postulaciones (con paginación - por defecto 10, ordenadas por fecha DESC):**
 ```graphql
 query {
-  obtenerPostulaciones {
+  obtenerPostulaciones(limit: 10) {
     id
     nombre
     aniosExperiencia
@@ -274,7 +278,7 @@ query {
         correo
       }
     }
-    entrevistas {
+    entrevistas(limit: 10) {
       id
       fecha
       entrevistador
@@ -323,10 +327,10 @@ query {
 
 #### Entrevistas
 
-**Obtener todas las entrevistas:**
+**Obtener todas las entrevistas (con paginación - por defecto 10, ordenadas por fecha DESC):**
 ```graphql
 query {
-  obtenerEntrevistas {
+  obtenerEntrevistas(limit: 10) {
     id
     fecha
     duracionMin
@@ -347,7 +351,7 @@ query {
         }
       }
     }
-    evaluaciones {
+    evaluaciones(limit: 10) {
       id
       calificacionTecnica
       calificacionActitud
@@ -390,10 +394,10 @@ query {
 
 #### Evaluaciones
 
-**Obtener todas las evaluaciones:**
+**Obtener todas las evaluaciones (con paginación - por defecto 10, ordenadas por fecha DESC):**
 ```graphql
 query {
-  obtenerEvaluaciones {
+  obtenerEvaluaciones(limit: 10) {
     id
     calificacionTecnica
     calificacionActitud
@@ -444,10 +448,10 @@ query {
 
 #### Visualizaciones
 
-**Obtener todas las visualizaciones:**
+**Obtener todas las visualizaciones (con paginación - por defecto 10, ordenadas por fecha DESC):**
 ```graphql
 query {
-  obtenerVisualizacionesOferta {
+  obtenerVisualizacionesOferta(limit: 10) {
     id
     fechaVisualizacion
     origen
@@ -784,6 +788,34 @@ Empresa (1) ──< (N) OfertaTrabajo
 - Los campos marcados con `!` en el schema son **obligatorios**
 - El endpoint GraphQL solo acepta peticiones **POST**
 - Las relaciones están correctamente mapeadas según la estructura de PostgreSQL
+
+## ⚡ Optimización y Paginación
+
+### Paginación Automática
+- **Por defecto:** Todas las queries devuelven los últimos **10 registros** (ordenados por `created_at DESC`)
+- **Parámetro `limit`:** Puedes especificar cuántos registros quieres (máximo 100)
+- **Ordenamiento:** Los registros se ordenan por fecha de creación descendente (más recientes primero)
+
+### Ejemplo de uso con paginación:
+```graphql
+# Obtener últimos 15 empresas
+query {
+  obtenerEmpresas(limit: 15) {
+    id
+    nombre
+    ofertas(limit: 5) {  # Solo las últimas 5 ofertas por empresa
+      id
+      titulo
+    }
+  }
+}
+```
+
+### ¿Por qué paginación?
+- **Rendimiento:** Evita cargar miles de registros de una vez
+- **Velocidad:** Las queries son instantáneas incluso con 3000+ registros
+- **Escalabilidad:** El sistema puede manejar grandes volúmenes de datos sin problemas
+- **UX:** Los usuarios ven primero los datos más recientes
 
 
 # Construir y levantar los servicios

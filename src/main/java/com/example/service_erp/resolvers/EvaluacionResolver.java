@@ -30,8 +30,8 @@ public class EvaluacionResolver {
     }
 
     @QueryMapping
-    public List<Evaluacion> obtenerEvaluaciones() {
-        return service.obtenerTodas();
+    public List<Evaluacion> obtenerEvaluaciones(@Argument Integer limit) {
+        return service.obtenerTodas(limit);
     }
 
     @QueryMapping

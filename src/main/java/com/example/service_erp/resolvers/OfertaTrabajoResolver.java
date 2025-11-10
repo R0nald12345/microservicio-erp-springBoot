@@ -5,6 +5,8 @@ import com.example.service_erp.entities.OfertaTrabajo;
 import com.example.service_erp.entities.Postulacion;
 import com.example.service_erp.entities.VisualizacionOferta;
 import com.example.service_erp.services.OfertaTrabajoService;
+import com.example.service_erp.services.PostulacionService;
+import com.example.service_erp.services.VisualizacionOfertaService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -19,9 +21,13 @@ import java.util.UUID;
 public class OfertaTrabajoResolver {
 
     private final OfertaTrabajoService service;
+    private final PostulacionService postulacionService;
+    private final VisualizacionOfertaService visualizacionOfertaService;
 
-    public OfertaTrabajoResolver(OfertaTrabajoService service) {
+    public OfertaTrabajoResolver(OfertaTrabajoService service, PostulacionService postulacionService, VisualizacionOfertaService visualizacionOfertaService) {
         this.service = service;
+        this.postulacionService = postulacionService;
+        this.visualizacionOfertaService = visualizacionOfertaService;
     }
 
     @SchemaMapping(typeName = "OfertaTrabajo", field = "empresa")
@@ -33,21 +39,21 @@ public class OfertaTrabajoResolver {
 
     @SchemaMapping(typeName = "OfertaTrabajo", field = "postulaciones")
     @Transactional(readOnly = true)
-    public List<Postulacion> postulaciones(OfertaTrabajo oferta) {
-        // Acceso directo al campo para evitar problemas con Lombok en el IDE
-        return oferta.postulaciones;
+    public List<Postulacion> postulaciones(OfertaTrabajo oferta, @Argument Integer limit) {
+        // Usar servicio optimizado con paginación
+        return postulacionService.obtenerPorOfertaId(oferta.getId(), limit != null ? limit : 10);
     }
 
     @SchemaMapping(typeName = "OfertaTrabajo", field = "visualizaciones")
     @Transactional(readOnly = true)
-    public List<VisualizacionOferta> visualizaciones(OfertaTrabajo oferta) {
-        // Acceso directo al campo para evitar problemas con Lombok en el IDE
-        return oferta.visualizaciones;
+    public List<VisualizacionOferta> visualizaciones(OfertaTrabajo oferta, @Argument Integer limit) {
+        // Usar servicio optimizado con paginación
+        return visualizacionOfertaService.obtenerPorOfertaId(oferta.getId(), limit != null ? limit : 10);
     }
 
     @QueryMapping
-    public List<OfertaTrabajo> obtenerOfertasTrabajo() {
-        return service.obtenerTodas();
+    public List<OfertaTrabajo> obtenerOfertasTrabajo(@Argument Integer limit) {
+        return service.obtenerTodas(limit);
     }
 
     @QueryMapping

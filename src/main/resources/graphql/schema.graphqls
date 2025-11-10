@@ -3,22 +3,22 @@ scalar DateTime
 scalar Json
 
 type Query {
-    obtenerEmpresas: [Empresa]
+    obtenerEmpresas(limit: Int): [Empresa]
     obtenerEmpresaPorId(id: UUID): Empresa
 
-    obtenerOfertasTrabajo: [OfertaTrabajo]
+    obtenerOfertasTrabajo(limit: Int): [OfertaTrabajo]
     obtenerOfertaTrabajoPorId(id: UUID): OfertaTrabajo
 
-    obtenerEntrevistas: [Entrevista]
+    obtenerEntrevistas(limit: Int): [Entrevista]
     obtenerEntrevistaPorId(id: UUID): Entrevista
     
-    obtenerEvaluaciones: [Evaluacion]
+    obtenerEvaluaciones(limit: Int): [Evaluacion]
     obtenerEvaluacionPorId(id: UUID): Evaluacion
     
-    obtenerPostulaciones: [Postulacion]
+    obtenerPostulaciones(limit: Int): [Postulacion]
     obtenerPostulacionPorId(id: UUID): Postulacion
     
-    obtenerVisualizacionesOferta: [VisualizacionOferta]
+    obtenerVisualizacionesOferta(limit: Int): [VisualizacionOferta]
     obtenerVisualizacionOfertaPorId(id: UUID): VisualizacionOferta
 }
 
@@ -88,7 +88,7 @@ type Empresa {
     rubro: String
     createdAt: DateTime
     updatedAt: DateTime
-    ofertas: [OfertaTrabajo]
+    ofertas(limit: Int): [OfertaTrabajo]
 }
 
 type OfertaTrabajo {
@@ -102,8 +102,8 @@ type OfertaTrabajo {
     empresa: Empresa
     createdAt: DateTime
     updatedAt: DateTime
-    postulaciones: [Postulacion]
-    visualizaciones: [VisualizacionOferta]
+    postulaciones(limit: Int): [Postulacion]
+    visualizaciones(limit: Int): [VisualizacionOferta]
 }
 
 type Postulacion {
@@ -123,7 +123,7 @@ type Postulacion {
     oferta: OfertaTrabajo
     createdAt: DateTime
     updatedAt: DateTime
-    entrevistas: [Entrevista]
+    entrevistas(limit: Int): [Entrevista]
 }
 
 type Entrevista {
@@ -136,7 +136,7 @@ type Entrevista {
     postulacion: Postulacion
     createdAt: DateTime
     updatedAt: DateTime
-    evaluaciones: [Evaluacion]
+    evaluaciones(limit: Int): [Evaluacion]
 }
 
 type Evaluacion {

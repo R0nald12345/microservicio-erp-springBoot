@@ -4,6 +4,7 @@ import com.example.service_erp.entities.Entrevista;
 import com.example.service_erp.entities.Evaluacion;
 import com.example.service_erp.entities.Postulacion;
 import com.example.service_erp.services.EntrevistaService;
+import com.example.service_erp.services.EvaluacionService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -18,9 +19,11 @@ import java.util.UUID;
 public class EntrevistaResolver {
 
     private final EntrevistaService service;
+    private final EvaluacionService evaluacionService;
 
-    public EntrevistaResolver(EntrevistaService service) {
+    public EntrevistaResolver(EntrevistaService service, EvaluacionService evaluacionService) {
         this.service = service;
+        this.evaluacionService = evaluacionService;
     }
 
     @SchemaMapping(typeName = "Entrevista", field = "postulacion")
@@ -32,14 +35,14 @@ public class EntrevistaResolver {
 
     @SchemaMapping(typeName = "Entrevista", field = "evaluaciones")
     @Transactional(readOnly = true)
-    public List<Evaluacion> evaluaciones(Entrevista entrevista) {
-        // Acceso directo al campo para evitar problemas con Lombok en el IDE
-        return entrevista.evaluaciones;
+    public List<Evaluacion> evaluaciones(Entrevista entrevista, @Argument Integer limit) {
+        // Usar servicio optimizado con paginación
+        return evaluacionService.obtenerPorEntrevistaId(entrevista.getId(), limit != null ? limit : 10);
     }
 
     @QueryMapping
-    public List<Entrevista> obtenerEntrevistas() {
-        return service.obtenerTodas();
+    public List<Entrevista> obtenerEntrevistas(@Argument Integer limit) {
+        return service.obtenerTodas(limit);
     }
 
     @QueryMapping

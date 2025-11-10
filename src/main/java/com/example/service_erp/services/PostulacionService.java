@@ -4,6 +4,9 @@ import com.example.service_erp.entities.OfertaTrabajo;
 import com.example.service_erp.entities.Postulacion;
 import com.example.service_erp.repositories.OfertaTrabajoRepository;
 import com.example.service_erp.repositories.PostulacionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +17,7 @@ public class PostulacionService {
 
     private final PostulacionRepository repository;
     private final OfertaTrabajoRepository ofertaRepository;
+    private static final int DEFAULT_LIMIT = 10;
 
     public PostulacionService(PostulacionRepository repository, OfertaTrabajoRepository ofertaRepository) {
         this.repository = repository;
@@ -21,7 +25,21 @@ public class PostulacionService {
     }
 
     public List<Postulacion> obtenerTodas() {
-        return repository.findAll();
+        return obtenerTodas(DEFAULT_LIMIT);
+    }
+
+    public List<Postulacion> obtenerTodas(Integer limit) {
+        int pageSize = (limit != null && limit > 0) ? Math.min(limit, 100) : DEFAULT_LIMIT;
+        Pageable pageable = PageRequest.of(0, pageSize);
+        Page<Postulacion> page = repository.findAllOrderedByCreatedAtDesc(pageable);
+        return page.getContent();
+    }
+
+    public List<Postulacion> obtenerPorOfertaId(UUID ofertaId, Integer limit) {
+        int pageSize = (limit != null && limit > 0) ? Math.min(limit, 100) : DEFAULT_LIMIT;
+        Pageable pageable = PageRequest.of(0, pageSize);
+        Page<Postulacion> page = repository.findByOfertaIdOrderedByCreatedAtDesc(ofertaId, pageable);
+        return page.getContent();
     }
 
     public Postulacion obtenerPorId(UUID id) {

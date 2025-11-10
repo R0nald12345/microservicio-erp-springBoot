@@ -3,6 +3,7 @@ package com.example.service_erp.resolvers;
 import com.example.service_erp.entities.Empresa;
 import com.example.service_erp.entities.OfertaTrabajo;
 import com.example.service_erp.services.EmpresaService;
+import com.example.service_erp.services.OfertaTrabajoService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -17,21 +18,23 @@ import java.util.UUID;
 public class EmpresaResolver {
 
     private final EmpresaService service;
+    private final OfertaTrabajoService ofertaTrabajoService;
 
-    public EmpresaResolver(EmpresaService service) {
+    public EmpresaResolver(EmpresaService service, OfertaTrabajoService ofertaTrabajoService) {
         this.service = service;
+        this.ofertaTrabajoService = ofertaTrabajoService;
     }
 
     @SchemaMapping(typeName = "Empresa", field = "ofertas")
     @Transactional(readOnly = true)
-    public List<OfertaTrabajo> ofertas(Empresa empresa) {
-        // Acceso directo al campo para evitar problemas con Lombok en el IDE
-        return empresa.ofertas;
+    public List<OfertaTrabajo> ofertas(Empresa empresa, @Argument Integer limit) {
+        // Usar servicio optimizado con paginación en lugar de cargar todas las relaciones
+        return ofertaTrabajoService.obtenerPorEmpresaId(empresa.getId(), limit != null ? limit : 10);
     }
 
     @QueryMapping
-    public List<Empresa> obtenerEmpresas() {
-        return service.obtenerTodas();
+    public List<Empresa> obtenerEmpresas(@Argument Integer limit) {
+        return service.obtenerTodas(limit);
     }
 
     @QueryMapping

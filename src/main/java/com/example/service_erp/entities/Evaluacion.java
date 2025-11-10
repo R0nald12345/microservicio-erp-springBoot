@@ -1,11 +1,12 @@
 package com.example.service_erp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 
@@ -15,7 +16,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class Evaluacion {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -37,13 +37,14 @@ public class Evaluacion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "entrevista_id", nullable = false)
     @ToString.Exclude
-    public Entrevista entrevista; // Público para acceso desde resolvers (Lombok genera getter pero IDE no lo reconoce)
+    @JsonIgnore
+    public Entrevista entrevista; // Público para acceso desde resolvers, @JsonIgnore para evitar bucles infinitos
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 }

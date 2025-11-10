@@ -4,6 +4,9 @@ import com.example.service_erp.entities.Empresa;
 import com.example.service_erp.entities.OfertaTrabajo;
 import com.example.service_erp.repositories.EmpresaRepository;
 import com.example.service_erp.repositories.OfertaTrabajoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +17,7 @@ public class OfertaTrabajoService {
 
     private final OfertaTrabajoRepository repository;
     private final EmpresaRepository empresaRepository;
+    private static final int DEFAULT_LIMIT = 10;
 
     public OfertaTrabajoService(OfertaTrabajoRepository repository, EmpresaRepository empresaRepository) {
         this.repository = repository;
@@ -21,7 +25,21 @@ public class OfertaTrabajoService {
     }
 
     public List<OfertaTrabajo> obtenerTodas() {
-        return repository.findAll();
+        return obtenerTodas(DEFAULT_LIMIT);
+    }
+
+    public List<OfertaTrabajo> obtenerTodas(Integer limit) {
+        int pageSize = (limit != null && limit > 0) ? Math.min(limit, 100) : DEFAULT_LIMIT; // Máximo 100
+        Pageable pageable = PageRequest.of(0, pageSize);
+        Page<OfertaTrabajo> page = repository.findAllOrderedByCreatedAtDesc(pageable);
+        return page.getContent();
+    }
+
+    public List<OfertaTrabajo> obtenerPorEmpresaId(UUID empresaId, Integer limit) {
+        int pageSize = (limit != null && limit > 0) ? Math.min(limit, 100) : DEFAULT_LIMIT;
+        Pageable pageable = PageRequest.of(0, pageSize);
+        Page<OfertaTrabajo> page = repository.findByEmpresaIdOrderedByCreatedAtDesc(empresaId, pageable);
+        return page.getContent();
     }
 
     public OfertaTrabajo obtenerPorId(UUID id) {
