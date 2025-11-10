@@ -1,14 +1,30 @@
 package com.example.service_erp.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "postulaciones")
@@ -20,25 +36,24 @@ public class Postulacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
     private UUID id;
 
-    @Column(name = "nombre")
+    @Column(nullable = false)
     private String nombre;
 
     @Column(name = "anios_experiencia")
-    private int aniosExperiencia;
+    private Integer aniosExperiencia;
 
     @Column(name = "nivel_educacion")
     private String nivelEducacion;
 
-    @Column(name = "habilidades")
+    @Column
     private String habilidades;
 
-    @Column(name = "idiomas")
+    @Column
     private String idiomas;
 
-    @Column(name = "certificaciones")
+    @Column
     private String certificaciones;
 
     @Column(name = "puesto_actual")
@@ -50,20 +65,14 @@ public class Postulacion {
     @Column(name = "fecha_postulacion")
     private String fechaPostulacion;
 
-    @Column(name = "estado")
+    @Column
     private String estado;
 
-    @Column(name = "telefono")
+    @Column
     private String telefono;
 
-    @Column(name = "email")
+    @Column
     private String email;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "oferta_id", nullable = false)
-    @ToString.Exclude
-    @JsonIgnore
-    public OfertaTrabajo oferta; // Público para acceso desde resolvers, @JsonIgnore para evitar bucles infinitos
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -73,8 +82,13 @@ public class Postulacion {
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
+    // Relación con OfertaTrabajo - IMPORTANTE: fetch = FetchType.EAGER
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "oferta_id", nullable = false)
+    private OfertaTrabajo oferta;
+
     @OneToMany(mappedBy = "postulacion", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnore
-    public List<Entrevista> entrevistas; // Público para acceso desde resolvers (Lombok genera getter pero IDE no lo reconoce)
+    private List<Entrevista> entrevistas;
 }

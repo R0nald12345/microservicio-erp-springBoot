@@ -1,16 +1,17 @@
 package com.example.service_erp.services;
 
-import com.example.service_erp.entities.OfertaTrabajo;
-import com.example.service_erp.entities.VisualizacionOferta;
-import com.example.service_erp.repositories.OfertaTrabajoRepository;
-import com.example.service_erp.repositories.VisualizacionOfertaRepository;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import com.example.service_erp.entities.OfertaTrabajo;
+import com.example.service_erp.entities.VisualizacionOferta;
+import com.example.service_erp.repositories.OfertaTrabajoRepository;
+import com.example.service_erp.repositories.VisualizacionOfertaRepository;
 
 @Service
 public class VisualizacionOfertaService {
@@ -55,6 +56,20 @@ public class VisualizacionOfertaService {
                 .origen(origen)
                 .oferta(oferta)
                 .build();
+
+        return repository.save(visualizacion);
+    }
+
+    public VisualizacionOferta actualizar(UUID id, String fechaVisualizacion, String origen) {
+        VisualizacionOferta visualizacion = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Visualización de oferta no encontrada"));
+
+        if (fechaVisualizacion != null && !fechaVisualizacion.isEmpty()) {
+            visualizacion.setFechaVisualizacion(fechaVisualizacion);
+        }
+        if (origen != null && !origen.isEmpty()) {
+            visualizacion.setOrigen(origen);
+        }
 
         return repository.save(visualizacion);
     }

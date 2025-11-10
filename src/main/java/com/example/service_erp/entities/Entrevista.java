@@ -20,10 +20,9 @@ public class Entrevista {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
     private UUID id;
 
-    @Column(name = "fecha")
+    @Column(nullable = false)
     private String fecha;
 
     @Column(name = "duracion_min")
@@ -35,14 +34,8 @@ public class Entrevista {
     @Column(name = "objetivos_cubiertos")
     private String objetivosCubiertos;
 
-    @Column(name = "entrevistador")
+    @Column
     private String entrevistador;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postulacion_id", nullable = false)
-    @ToString.Exclude
-    @JsonIgnore
-    public Postulacion postulacion; // Público para acceso desde resolvers, @JsonIgnore para evitar bucles infinitos
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -52,8 +45,13 @@ public class Entrevista {
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
+    // Relación con Postulacion - IMPORTANTE: fetch = FetchType.EAGER
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "postulacion_id", nullable = false)
+    private Postulacion postulacion;
+
     @OneToMany(mappedBy = "entrevista", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnore
-    public List<Evaluacion> evaluaciones; // Público para acceso desde resolvers (Lombok genera getter pero IDE no lo reconoce)
+    private List<Evaluacion> evaluaciones;
 }
