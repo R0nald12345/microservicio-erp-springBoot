@@ -1,15 +1,23 @@
 package com.example.service_erp.services;
 
-import com.example.service_erp.entities.OfertaTrabajo;
-import com.example.service_erp.entities.Postulacion;
-import com.example.service_erp.repositories.OfertaTrabajoRepository;
-import com.example.service_erp.repositories.PostulacionRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import com.example.service_erp.entities.OfertaTrabajo;
+import com.example.service_erp.entities.Postulacion;
+import com.example.service_erp.repositories.OfertaTrabajoRepository;
+import com.example.service_erp.repositories.PostulacionRepository;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -17,6 +25,13 @@ public class PostulacionService {
 
     private final PostulacionRepository repository;
     private final OfertaTrabajoRepository ofertaRepository;
+    private static final int DEFAULT_LIMIT = 10;
+
+    @Autowired
+    private HttpIntegrationService httpIntegrationService;
+
+    @Value("${webhook.telegram.url:}")
+    private String telegramWebhookUrl;
 
     public PostulacionService(PostulacionRepository repository, OfertaTrabajoRepository ofertaRepository) {
         this.repository = repository;
