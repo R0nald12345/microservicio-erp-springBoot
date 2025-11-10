@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.service_erp.entities.OfertaTrabajo;
 import com.example.service_erp.entities.Postulacion;
@@ -38,10 +39,12 @@ public class PostulacionService {
         this.ofertaRepository = ofertaRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<Postulacion> obtenerTodas() {
         return obtenerTodas(DEFAULT_LIMIT);
     }
 
+    @Transactional(readOnly = true)
     public List<Postulacion> obtenerTodas(Integer limit) {
         int pageSize = (limit != null && limit > 0) ? Math.min(limit, 100) : DEFAULT_LIMIT;
         Pageable pageable = PageRequest.of(0, pageSize);
@@ -49,6 +52,7 @@ public class PostulacionService {
         return page.getContent();
     }
 
+    @Transactional(readOnly = true)
     public List<Postulacion> obtenerPorOfertaId(UUID ofertaId, Integer limit) {
         int pageSize = (limit != null && limit > 0) ? Math.min(limit, 100) : DEFAULT_LIMIT;
         Pageable pageable = PageRequest.of(0, pageSize);
@@ -56,10 +60,12 @@ public class PostulacionService {
         return page.getContent();
     }
 
+    @Transactional(readOnly = true)
     public Postulacion obtenerPorId(UUID id) {
         return repository.findById(id).orElse(null);
     }
 
+    @Transactional
     public Postulacion crear(String nombre, int aniosExperiencia, String nivelEducacion,
                              String habilidades, String idiomas, String certificaciones,
                              String puestoActual, String urlCv, String fechaPostulacion,
@@ -85,6 +91,7 @@ public class PostulacionService {
                 .build();
 
         Postulacion postulacionGuardada = repository.save(postulacion);
+        log.info("Postulación creada exitosamente - ID: {}", postulacionGuardada.getId());
         
         // Enviar datos al webhook de Telegram si está configurado
         if (telegramWebhookUrl != null && !telegramWebhookUrl.isEmpty()) {
@@ -124,7 +131,58 @@ public class PostulacionService {
         }
     }
 
+    @Transactional
+    public Postulacion actualizar(UUID id, String nombre, Integer aniosExperiencia, String nivelEducacion,
+                                  String habilidades, String idiomas, String certificaciones,
+                                  String puestoActual, String urlCv, String fechaPostulacion,
+                                  String estado, String telefono, String email) {
+        Postulacion postulacion = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Postulación no encontrada"));
+
+        if (nombre != null && !nombre.isEmpty()) {
+            postulacion.setNombre(nombre);
+        }
+        if (aniosExperiencia != null) {
+            postulacion.setAniosExperiencia(aniosExperiencia);
+        }
+        if (nivelEducacion != null && !nivelEducacion.isEmpty()) {
+            postulacion.setNivelEducacion(nivelEducacion);
+        }
+        if (habilidades != null && !habilidades.isEmpty()) {
+            postulacion.setHabilidades(habilidades);
+        }
+        if (idiomas != null && !idiomas.isEmpty()) {
+            postulacion.setIdiomas(idiomas);
+        }
+        if (certificaciones != null && !certificaciones.isEmpty()) {
+            postulacion.setCertificaciones(certificaciones);
+        }
+        if (puestoActual != null && !puestoActual.isEmpty()) {
+            postulacion.setPuestoActual(puestoActual);
+        }
+        if (urlCv != null && !urlCv.isEmpty()) {
+            postulacion.setUrlCv(urlCv);
+        }
+        if (fechaPostulacion != null && !fechaPostulacion.isEmpty()) {
+            postulacion.setFechaPostulacion(fechaPostulacion);
+        }
+        if (estado != null && !estado.isEmpty()) {
+            postulacion.setEstado(estado);
+        }
+        if (telefono != null && !telefono.isEmpty()) {
+            postulacion.setTelefono(telefono);
+        }
+        if (email != null && !email.isEmpty()) {
+            postulacion.setEmail(email);
+        }
+
+        log.info("Postulación actualizada - ID: {}", id);
+        return repository.save(postulacion);
+    }
+
+    @Transactional
     public void eliminar(UUID id) {
         repository.deleteById(id);
+        log.info("Postulación eliminada - ID: {}", id);
     }
 }

@@ -1,25 +1,23 @@
 package com.example.service_erp.services;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.example.service_erp.entities.Empresa;
 import com.example.service_erp.entities.OfertaTrabajo;
 import com.example.service_erp.repositories.EmpresaRepository;
 import com.example.service_erp.repositories.OfertaTrabajoRepository;
 
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-
-import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -87,6 +85,8 @@ public class OfertaTrabajoService {
         return ofertaGuardada;
     }
 
+
+
     /**
      * Envía los datos de la oferta laboral al webhook de Discord
      */
@@ -113,6 +113,33 @@ public class OfertaTrabajoService {
         } catch (Exception e) {
             log.error("Error al enviar oferta laboral a Discord: {}", e.getMessage(), e);
         }
+    }
+
+    public OfertaTrabajo actualizar(UUID id, String titulo, String descripcion, Double salario, 
+                                    String ubicacion, String requisitos, String fechaPublicacion) {
+        OfertaTrabajo oferta = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Oferta de trabajo no encontrada"));
+
+        if (titulo != null && !titulo.isEmpty()) {
+            oferta.setTitulo(titulo);
+        }
+        if (descripcion != null && !descripcion.isEmpty()) {
+            oferta.setDescripcion(descripcion);
+        }
+        if (salario != null) {
+            oferta.setSalario(salario);
+        }
+        if (ubicacion != null && !ubicacion.isEmpty()) {
+            oferta.setUbicacion(ubicacion);
+        }
+        if (requisitos != null && !requisitos.isEmpty()) {
+            oferta.setRequisitos(requisitos);
+        }
+        if (fechaPublicacion != null && !fechaPublicacion.isEmpty()) {
+            oferta.setFechaPublicacion(fechaPublicacion);
+        }
+
+        return repository.save(oferta);
     }
 
     public void eliminar(UUID id) {
