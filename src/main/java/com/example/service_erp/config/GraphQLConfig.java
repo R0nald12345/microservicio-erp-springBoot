@@ -5,6 +5,7 @@ import graphql.schema.GraphQLScalarType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class GraphQLConfig {
@@ -22,5 +23,10 @@ public class GraphQLConfig {
                         .description("Scalar type for JSON objects")
                         .coercing(ExtendedScalars.Object.getCoercing())
                         .build());
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }
